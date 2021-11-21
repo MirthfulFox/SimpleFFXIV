@@ -1,6 +1,7 @@
 from os import getenv
 from discord.ext import commands
 import pyxivapi
+import simpleffxiv.utils.embed as emb
 
 class XIVSearch(commands.Cog):
 
@@ -20,7 +21,7 @@ class XIVSearch(commands.Cog):
                 await ctx.send("https://eu.finalfantasyxiv.com/lodestone/character/"+str(charID))
             else:
                 await ctx.send("Character not found")
-                
+
             await client.session.close()
         
 
