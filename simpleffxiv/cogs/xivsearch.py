@@ -1,7 +1,8 @@
 from os import getenv
+from discord import message
 from discord.ext import commands
 import pyxivapi
-import simpleffxiv.utils.embed as emb
+from simpleffxiv.utils.messages import badsyntax
 
 class XIVSearch(commands.Cog):
 
@@ -11,7 +12,8 @@ class XIVSearch(commands.Cog):
     @commands.command(name="playersearch")
     async def playersearch(self, ctx: commands.Context, *args):
         if (len(args)!=3):
-            await ctx.send("Syntax is: "+ getenv("prefix") +"playersearch forename surname world")
+            await ctx.send(embed=badsyntax(description=getenv("prefix") + "playersearch `forename` `surname` `world`"))
+            #await ctx.send("Syntax is: "+ getenv("prefix") +"playersearch forename surname world")
         else:
             client = pyxivapi.XIVAPIClient(api_key=getenv("XIVAPIKey"))
             character = await client.character_search(world=args[2], forename=args[0], surname=args[1])
