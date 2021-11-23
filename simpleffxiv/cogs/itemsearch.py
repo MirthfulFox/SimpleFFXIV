@@ -1,5 +1,7 @@
 from discord.ext import commands
 import requests
+from simpleffxiv.utils.messages import notfound, syntaxerror, unexpectederror
+from os import getenv
 
 class ItemSearch(commands.Cog):
 
@@ -8,8 +10,9 @@ class ItemSearch(commands.Cog):
     
     @commands.command(name="itemsearch")
     async def itemsearch(self, ctx: commands.Context, *args):
-        
-        #The code below concatenates the args and gets the first character of each word uppercase.
+        if (len(args)==0):
+            await ctx.send(embed=syntaxerror(title="Syntax is:", description=getenv("prefix") + "itemsearch `item`"))
+            return
         search = ""
         for i in args:
             search = search + "_" + i.capitalize()
@@ -20,7 +23,8 @@ class ItemSearch(commands.Cog):
         if response.status_code == 200:
             await ctx.send(fullURL)
         else:
-            await ctx.send("The item hasn't been found")
+            await ctx.send(embed=notfound("Item"))
+
 
 def setup(bot: commands.Bot):
     bot.add_cog(ItemSearch(bot))
