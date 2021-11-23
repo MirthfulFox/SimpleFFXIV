@@ -5,6 +5,7 @@ from simpleffxiv.utils.messages import syntaxerror, nolistings,notfound, itempri
 from simpleffxiv.utils.itemid import getitemid
 import requests
 import json
+import time
 
 class XIVSearch(commands.Cog):
 
@@ -18,13 +19,26 @@ class XIVSearch(commands.Cog):
             return
         client = pyxivapi.XIVAPIClient(api_key=getenv("XIVAPIKey"))
         character = await client.character_search(world=args[2], forename=args[0], surname=args[1])
-        if(character['Pagination']['Results'] == 1):
-            charID=(character['Results'][0]['ID'])
-            await ctx.send("https://eu.finalfantasyxiv.com/lodestone/character/"+str(charID))
-        else:
+        try:
+            if(character['Pagination']['Results'] == 1):
+                charID=(character['Results'][0]['ID'])
+                async with ctx.typing():
+                    response = requests.get("https://ffxiv-character-cards.herokuapp.com/characters/id/%s.png" % charID)
+                    for i in range (0,10):
+                        if response.ok:
+                            await ctx.send(response.url)
+                            await ctx.send("<https://eu.finalfantasyxiv.com/lodestone/character/%s>" % str(charID))
+                            break
+                        response = requests.get("https://ffxiv-character-cards.herokuapp.com/characters/id/%s.png" % charID)
+                        time.sleep(1)
+                if not response.ok:
+                    await ctx.send("<https://eu.finalfantasyxiv.com/lodestone/character/%s>" % str(charID))
+            else:
+                await ctx.send(embed=notfound("Character"))
+            await client.session.close()
+        except:
             await ctx.send(embed=notfound("Character"))
-
-        await client.session.close()
+            await client.session.close()
     
 
     @commands.command(name="itemprice")
