@@ -1,9 +1,11 @@
 from asyncio.windows_events import NULL
 import discord
+from os import getenv
 
-def syntaxerror(description, title="❌ Wrong syntax!"):
+def syntaxerror(description, title="❌ Wrong syntax!", opt=False):
     embed = discord.Embed(title=title, description=description, color=0xFF0000)
-    #embed.set_author(name="MirthfulFox", url="https://github.com/MirthfulFox")
+    if opt==True:
+        embed.set_footer(text="Parameters inside [ ] are optional.")
     return embed
 
 def notfound(titlename):
@@ -59,4 +61,29 @@ def itempricesDC(item, world, prices, quantity, hq, worldname):
 
 def unexpectederror():
     embed = discord.Embed(title="⚠️ Unexpected error.", description="Try again later", color=0xFF0000)
+    return embed
+
+def helpmessage():
+    embed = discord.Embed(title="❓ Help", color=0x4D96F4)
+
+    commands_name = f'`{getenv("prefix")}itemsearch | item | is`\n'
+    commands_name += f'`{getenv("prefix")}playersearch | player | ps`\n'
+    commands_name += f'`{getenv("prefix")}itemprice | price | ip`'
+
+    commands_syntax = f'`item name`\n`forename` `surname` `world`\n`\"item name\"` `world OR datacenter` `[hq|nq]`'
+
+    embed.add_field(name="Command", value=commands_name, inline=True)
+    embed.add_field(name="Syntax", value=commands_syntax, inline=True)
+
+    embed.set_footer(text="Parameters inside [ ] are optional.")
+    return embed
+
+def partyembed(ctx, desc = "none"):
+    if desc == ("none"):
+        embed = discord.Embed(title=f"{ctx.author.name}'s party", color=0x2f233c)
+    else:
+        embed = discord.Embed(title=f"{ctx.author.name}'s party", color=0x2f233c, description=desc)
+    embed.add_field(name="Tank", value="-", inline=True)
+    embed.add_field(name="Healer", value="-", inline=True)
+    embed.add_field(name="DPS", value="-", inline=True)
     return embed
