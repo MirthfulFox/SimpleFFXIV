@@ -68,22 +68,13 @@ def helpmessage():
 
     commands_name = f'`{getenv("prefix")}itemsearch | item | is`\n'
     commands_name += f'`{getenv("prefix")}playersearch | player | ps`\n'
-    commands_name += f'`{getenv("prefix")}itemprice | price | ip`'
+    commands_name += f'`{getenv("prefix")}itemprice | price | ip`\n'
+    commands_name += f'`{getenv("prefix")}createparty | party | cp`'
 
-    commands_syntax = f'`item name`\n`forename` `surname` `world`\n`\"item name\"` `world OR datacenter` `[hq|nq]`'
+    commands_syntax = f'`item name`\n`forename` `surname` `world`\n`\"item name\"` `world OR datacenter` `[hq|nq]`\n`\"max players\"` `[\"description\"]`'
 
     embed.add_field(name="Command", value=commands_name, inline=True)
     embed.add_field(name="Syntax", value=commands_syntax, inline=True)
 
     embed.set_footer(text="Parameters inside [ ] are optional.")
-    return embed
-
-def partyembed(ctx, desc = "none"):
-    if desc == ("none"):
-        embed = discord.Embed(title=f"{ctx.author.name}'s party", color=0x2f233c)
-    else:
-        embed = discord.Embed(title=f"{ctx.author.name}'s party", color=0x2f233c, description=desc)
-    embed.add_field(name="Tank", value="-", inline=True)
-    embed.add_field(name="Healer", value="-", inline=True)
-    embed.add_field(name="DPS", value="-", inline=True)
     return embed
