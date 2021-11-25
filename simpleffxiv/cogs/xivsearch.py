@@ -18,30 +18,37 @@ class XIVSearch(commands.Cog):
             await ctx.send(embed=syntaxerror(description=getenv("prefix") + "playersearch `forename` `surname` `world`"))
             return
         client = pyxivapi.XIVAPIClient(api_key=getenv("XIVAPIKey"))
-        character = await client.character_search(world=args[2], forename=args[0], surname=args[1])
-        try:
-            if(character is not None):
-                if(character['Pagination']['Results'] > 0):
-                    charID=(character['Results'][0]['ID'])
-                    async with ctx.typing():
-                        response = requests.get("https://ffxiv-character-cards.herokuapp.com/characters/id/%s.png" % charID)
-                        for i in range (0,10):
-                            if response.ok:
-                                await ctx.send(response.url)
-                                await ctx.send("<https://eu.finalfantasyxiv.com/lodestone/character/%s>" % str(charID))
-                                break
+        found = False
+        async def ps (ctx, found):
+            try:
+                character = await client.character_search(world=args[2], forename=args[0], surname=args[1])
+                if(character is not None):
+                    if(character['Pagination']['Results'] > 0):
+                        charID=(character['Results'][0]['ID'])
+                        async with ctx.typing():
                             response = requests.get("https://ffxiv-character-cards.herokuapp.com/characters/id/%s.png" % charID)
-                            time.sleep(1)
-                    if not response.ok:
-                        await ctx.send("<https://eu.finalfantasyxiv.com/lodestone/character/%s>" % str(charID))
+                            for i in range (0,10):
+                                if response.ok:
+                                    await ctx.send(response.url)
+                                    await ctx.send("<https://eu.finalfantasyxiv.com/lodestone/character/%s>" % str(charID))
+                                    break
+                                response = requests.get("https://ffxiv-character-cards.herokuapp.com/characters/id/%s.png" % charID)
+                                time.sleep(1)
+                        if not response.ok:
+                            await ctx.send("<https://eu.finalfantasyxiv.com/lodestone/character/%s>" % str(charID))
+                    else:
+                        await ctx.send(embed=notfound("Character"))
+                    await client.session.close()
+                    found = True    
                 else:
-                    await ctx.send(embed=notfound("Character"))
+                    for i in range(0,10):
+                        if found == True: break
+                        time.sleep(i)
+                        await ps(ctx)
+            except:
+                await ctx.send(embed=unexpectederror())
                 await client.session.close()
-            else:
-                await self.playersearch(ctx = ctx, args = args)
-        except:
-            await ctx.send(embed=unexpectederror())
-            await client.session.close()
+        await ps(ctx, found)
     
 
     @commands.command(name="itemprice", aliases=["ip", "price"])
