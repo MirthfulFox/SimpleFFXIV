@@ -19,7 +19,7 @@ class XIVSearch(commands.Cog):
             return
         client = pyxivapi.XIVAPIClient(api_key=getenv("XIVAPIKey"))
         found = False
-        async def ps (ctx, found):
+        async def ps(ctx, found):
             try:
                 character = await client.character_search(world=args[2], forename=args[0], surname=args[1])
                 if(character is not None):
@@ -44,8 +44,9 @@ class XIVSearch(commands.Cog):
                     for i in range(0,10):
                         if found == True: break
                         time.sleep(i)
-                        await ps(ctx)
-            except:
+                        await ps(ctx, found)
+            except Exception as e:
+                print(e)
                 await ctx.send(embed=unexpectederror())
                 await client.session.close()
         await ps(ctx, found)
