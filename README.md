@@ -4,7 +4,7 @@ A simple bot that offers tools for the critically acclaimed MMORPG Final Fantasy
 ## Dependencies
 `pip install -r requirements.txt`
 
-## Thanks to:
+### Thanks to:
 - [pycord](https://github.com/Pycord-Development/pycord)
 - [pyxivapi](https://github.com/xivapi/xivapi-py)
 - [XIV Character Cards](https://github.com/ArcaneDisgea/XIV-Character-Cards)
